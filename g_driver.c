@@ -66,7 +66,8 @@ static void usb_mouse_irq(struct urb *urb)
 		goto resubmit;
 	}
 
-	input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
+	input_report_key(dev, KEY_G,   data[0] & 0x01);
+	//input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
 	input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
 	input_report_key(dev, BTN_MIDDLE, data[0] & 0x04);
 	input_report_key(dev, BTN_SIDE,   data[0] & 0x08);
@@ -170,6 +171,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
 	input_dev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_MIDDLE);
+	set_bit(KEY_G, input_dev->keybit);
 	input_dev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
 	input_dev->keybit[BIT_WORD(BTN_MOUSE)] |= BIT_MASK(BTN_SIDE) |
 		BIT_MASK(BTN_EXTRA);
