@@ -53,7 +53,7 @@ static void usb_mouse_irq(struct urb *urb)
 	struct input_dev *dev = mouse->dev;
 	int status;
 
-	pr_info("GABRIELLLLL: usb_mouse_irq\n");
+	pr_info("GABRIELLLLL: usb_mouse_irq %d %d\n", data[6], data[7]);
 	switch (urb->status) {
 	case 0:			/* success */
 		break;
@@ -66,16 +66,18 @@ static void usb_mouse_irq(struct urb *urb)
 		goto resubmit;
 	}
 
-	input_report_key(dev, KEY_G,   data[0] & 0x01);
-	//input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
-	input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
-	input_report_key(dev, BTN_MIDDLE, data[0] & 0x04);
-	input_report_key(dev, BTN_SIDE,   data[0] & 0x08);
-	input_report_key(dev, BTN_EXTRA,  data[0] & 0x10);
+	input_report_key(dev, BTN_LEFT,   data[6] & 0x08);
+	// input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
+	// input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
+	// input_report_key(dev, BTN_MIDDLE, data[0] & 0x04);
+	// input_report_key(dev, BTN_SIDE,   data[0] & 0x08);
+	// input_report_key(dev, BTN_EXTRA,  data[0] & 0x10);
 
-	input_report_rel(dev, REL_X,     data[1]);
-	input_report_rel(dev, REL_Y,     data[2]);
-	input_report_rel(dev, REL_WHEEL, data[3]*-1);
+	input_report_rel(dev, REL_X,     ((data[0] & 0xFF) - 128) / 16);
+	input_report_rel(dev, REL_Y,     ((data[1] & 0xFF) - 128) / 16);
+	// input_report_rel(dev, REL_X,     data[1]);
+	// input_report_rel(dev, REL_Y,     data[2]);
+	// input_report_rel(dev, REL_WHEEL, data[3]*-1);
 
 	input_sync(dev);
 resubmit:
@@ -120,12 +122,12 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 	interface = intf->cur_altsetting;
 
 	pr_info("GABRIELLLLL: usb_mouse_probe\n");
-	if (interface->desc.bNumEndpoints != 1)
-		return -ENODEV;
+	// if (interface->desc.bNumEndpoints != 1)
+	// 	return -ENODEV;
 
 	endpoint = &interface->endpoint[0].desc;
-	if (!usb_endpoint_is_int_in(endpoint))
-		return -ENODEV;
+	// if (!usb_endpoint_is_int_in(endpoint))
+	// 	return -ENODEV;
 
 	pipe = usb_rcvintpipe(dev, endpoint->bEndpointAddress);
 	maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
@@ -220,10 +222,20 @@ static void usb_mouse_disconnect(struct usb_interface *intf)
 	}
 }
 
-static const struct usb_device_id usb_mouse_id_table[] = {
-	{ USB_INTERFACE_INFO(USB_INTERFACE_CLASS_HID, USB_INTERFACE_SUBCLASS_BOOT,
-		USB_INTERFACE_PROTOCOL_MOUSE) },
-	{ }	/* Terminating entry */
+// static const struct usb_device_id usb_mouse_id_table[] = {
+// 	{ USB_INTERFACE_INFO(USB_INTERFACE_CLASS_HID, USB_INTERFACE_SUBCLASS_BOOT,
+// 		USB_INTERFACE_PROTOCOL_MOUSE) },
+// 	{ }	/* Terminating entry */
+// };
+
+/* Define these values to match your devices */
+#define USB_VENDOR_ID      0x0079
+#define USB_PRODUCT_ID     0x0006
+
+/* table of devices that work with this driver */
+static struct usb_device_id usb_mouse_id_table [] = {
+    { USB_DEVICE(USB_VENDOR_ID, USB_PRODUCT_ID) },
+    { }	/* Terminating entry */
 };
 
 MODULE_DEVICE_TABLE (usb, usb_mouse_id_table);
