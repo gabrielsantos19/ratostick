@@ -122,12 +122,12 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 	interface = intf->cur_altsetting;
 
 	pr_info("GABRIELLLLL: usb_mouse_probe\n");
-	// if (interface->desc.bNumEndpoints != 1)
-	// 	return -ENODEV;
+	if (interface->desc.bNumEndpoints != 2)
+		return -ENODEV;
 
 	endpoint = &interface->endpoint[0].desc;
-	// if (!usb_endpoint_is_int_in(endpoint))
-	// 	return -ENODEV;
+	if (!usb_endpoint_is_int_in(endpoint))
+		return -ENODEV;
 
 	pipe = usb_rcvintpipe(dev, endpoint->bEndpointAddress);
 	maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
