@@ -66,6 +66,27 @@ static void usb_mouse_irq(struct urb *urb)
 		goto resubmit;
 	}
 
+	// Byte 0 -> Analógico esquerdo X
+	// Byte 1 -> Analógico esquerdo Y
+	// Byte 2 -> ???
+	// Byte 3 -> Analógico direito X
+	// Byte 4 -> Analógico direito Y
+	// Byte 5
+	// 0x0F Contagem sentido horário de combinações das setas ???
+	// 0x10 -> 1
+	// 0x20 -> 2
+	// 0x40 -> 3
+	// 0x80 -> 4
+	// Byte 6
+	// 0x01 -> L1
+	// 0x02 -> R1
+	// 0x04 -> L2
+	// 0x08 -> R2
+	// 0x10 -> 9
+	// 0x20 -> 10 (Start)
+	// 0x40 -> Analógico esquerdo - Botão
+	// 0x80 -> Analógico direito
+	
 	input_report_key(dev, BTN_LEFT,   data[6] & 0x08);
 	// input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
 	// input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
