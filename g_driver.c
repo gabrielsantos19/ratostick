@@ -53,7 +53,6 @@ static void usb_mouse_irq(struct urb *urb)
 	struct input_dev *dev = mouse->dev;
 	int status;
 
-	pr_info("GABRIELLLLL: usb_mouse_irq %d %d\n", data[6], data[7]);
 	switch (urb->status) {
 	case 0:			/* success */
 		break;
@@ -116,7 +115,6 @@ static int usb_mouse_open(struct input_dev *dev)
 {
 	struct usb_mouse *mouse = input_get_drvdata(dev);
 
-	pr_info("GABRIELLLLL: usb_mouse_open\n");
 	mouse->irq->dev = mouse->usbdev;
 	if (usb_submit_urb(mouse->irq, GFP_KERNEL))
 		return -EIO;
@@ -128,7 +126,6 @@ static void usb_mouse_close(struct input_dev *dev)
 {
 	struct usb_mouse *mouse = input_get_drvdata(dev);
 
-	pr_info("GABRIELLLLL: usb_mouse_close\n");
 	usb_kill_urb(mouse->irq);
 }
 
@@ -144,7 +141,6 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
 	interface = intf->cur_altsetting;
 
-	pr_info("GABRIELLLLL: usb_mouse_probe\n");
 	if (interface->desc.bNumEndpoints != 2)
 		return -ENODEV;
 
@@ -234,7 +230,6 @@ static void usb_mouse_disconnect(struct usb_interface *intf)
 {
 	struct usb_mouse *mouse = usb_get_intfdata (intf);
 
-	pr_info("GABRIELLLLL: usb_mouse_disconnect\n");
 	usb_set_intfdata(intf, NULL);
 	if (mouse) {
 		usb_kill_urb(mouse->irq);
