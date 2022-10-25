@@ -49,7 +49,7 @@ struct usb_mouse {
 static void usb_mouse_irq(struct urb *urb)
 {
 	struct usb_mouse *mouse = urb->context;
-	signed char *data = mouse->data;
+	unsigned char *data = mouse->data;
 	struct input_dev *dev = mouse->dev;
 	int status;
 
@@ -64,6 +64,8 @@ static void usb_mouse_irq(struct urb *urb)
 	default:		/* error */
 		goto resubmit;
 	}
+
+
 
 	// Byte 0 -> Analógico esquerdo X
 	// Byte 1 -> Analógico esquerdo Y
@@ -86,20 +88,39 @@ static void usb_mouse_irq(struct urb *urb)
 	// 0x40 -> Analógico esquerdo - Botão
 	// 0x80 -> Analógico direito
 
+
+	input_report_key(dev, KEY_UP,     (data[5] & 0x0F) == 0);
+	input_report_key(dev, KEY_RIGHT,  (data[5] & 0x0F) == 2);
+	input_report_key(dev, KEY_DOWN,   (data[5] & 0x0F) == 4);
+	input_report_key(dev, KEY_LEFT,   (data[5] & 0x0F) == 6);
+
+	input_report_key(dev, KEY_1,   data[5] & 0x10);
+	input_report_key(dev, KEY_2,   data[5] & 0x20);
+	input_report_key(dev, KEY_3,   data[5] & 0x40);
+	input_report_key(dev, KEY_4,   data[5] & 0x80);
+
+	input_report_key(dev, KEY_ENTER,     data[6] & 0x01);
+	input_report_key(dev, KEY_BACKSPACE, data[6] & 0x02);
+	input_report_key(dev, KEY_9,         data[6] & 0x10);
+	input_report_key(dev, KEY_0,         data[6] & 0x20);
+
 	input_report_key(dev, BTN_LEFT,   data[6] & 0x04);
 	input_report_key(dev, BTN_RIGHT,  data[6] & 0x08);
+	input_report_rel(dev, REL_X,      (data[3] - 128) / 32);
+	input_report_rel(dev, REL_Y,      (data[4] - 128) / 32);
+	input_report_rel(dev, REL_WHEEL,  (data[1] - 128) / 64 * -1);
+
+
+
 	// input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
 	// input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
 	// input_report_key(dev, BTN_MIDDLE, data[0] & 0x04);
 	// input_report_key(dev, BTN_SIDE,   data[0] & 0x08);
 	// input_report_key(dev, BTN_EXTRA,  data[0] & 0x10);
 
-	input_report_rel(dev, REL_X,     ((data[3] & 0xFF) - 128) / 32);
-	input_report_rel(dev, REL_Y,     ((data[4] & 0xFF) - 128) / 32);
-	input_report_rel(dev, REL_WHEEL, ((data[1] & 0xFF) - 128) / 64 * -1);
 	// input_report_rel(dev, REL_X,     data[1]);
 	// input_report_rel(dev, REL_Y,     data[2]);
-	// input_report_rel(dev, REL_WHEEL, data[3]*-1);
+	// input_report_rel(dev, REL_WHEEL, data[3]);
 
 	input_sync(dev);
 resubmit:
@@ -192,10 +213,26 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
 	input_dev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_MIDDLE);
-	set_bit(KEY_G, input_dev->keybit);
+
+
+
+	set_bit(KEY_UP, input_dev->keybit);
+	set_bit(KEY_LEFT, input_dev->keybit);
+	set_bit(KEY_RIGHT, input_dev->keybit);
+	set_bit(KEY_DOWN, input_dev->keybit);
+	set_bit(KEY_ENTER, input_dev->keybit);
+	set_bit(KEY_BACKSPACE, input_dev->keybit);
+	set_bit(KEY_1, input_dev->keybit);
+	set_bit(KEY_2, input_dev->keybit);
+	set_bit(KEY_3, input_dev->keybit);
+	set_bit(KEY_4, input_dev->keybit);
+	set_bit(KEY_9, input_dev->keybit);
+	set_bit(KEY_0, input_dev->keybit);
+
+
+
 	input_dev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
-	input_dev->keybit[BIT_WORD(BTN_MOUSE)] |= BIT_MASK(BTN_SIDE) |
-		BIT_MASK(BTN_EXTRA);
+	input_dev->keybit[BIT_WORD(BTN_MOUSE)] |= BIT_MASK(BTN_SIDE) | BIT_MASK(BTN_EXTRA);
 	input_dev->relbit[0] |= BIT_MASK(REL_WHEEL);
 
 	input_set_drvdata(input_dev, mouse);
