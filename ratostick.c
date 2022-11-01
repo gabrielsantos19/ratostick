@@ -113,17 +113,7 @@ static void usb_mouse_irq(struct urb *urb)
 	input_report_rel(dev, REL_Y,      (data[4] - 128) / 32);
 	input_report_rel(dev, REL_WHEEL,  (data[1] - 128) / 64 * -1);
 
-
-
-	// input_report_key(dev, BTN_LEFT,   data[0] & 0x01);
-	// input_report_key(dev, BTN_RIGHT,  data[0] & 0x02);
-	// input_report_key(dev, BTN_MIDDLE, data[0] & 0x04);
-	// input_report_key(dev, BTN_SIDE,   data[0] & 0x08);
-	// input_report_key(dev, BTN_EXTRA,  data[0] & 0x10);
-
-	// input_report_rel(dev, REL_X,     data[1]);
-	// input_report_rel(dev, REL_Y,     data[2]);
-	// input_report_rel(dev, REL_WHEEL, data[3]);
+	
 
 	input_sync(dev);
 resubmit:
