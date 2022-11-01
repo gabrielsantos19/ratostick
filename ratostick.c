@@ -113,7 +113,7 @@ static void usb_mouse_irq(struct urb *urb)
 	input_report_rel(dev, REL_Y,      (data[4] - 128) / 32);
 	input_report_rel(dev, REL_WHEEL,  (data[1] - 128) / 64 * -1);
 
-	
+
 
 	input_sync(dev);
 resubmit:
@@ -289,7 +289,7 @@ static struct usb_device_id usb_mouse_id_table [] = {
 MODULE_DEVICE_TABLE (usb, usb_mouse_id_table);
 
 static struct usb_driver usb_mouse_driver = {
-	.name		= "usbmouse",
+	.name		= "ratostick",
 	.probe		= usb_mouse_probe,
 	.disconnect	= usb_mouse_disconnect,
 	.id_table	= usb_mouse_id_table,
