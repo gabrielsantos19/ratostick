@@ -103,6 +103,8 @@ static void usb_mouse_irq(struct urb *urb)
 
 
 
+	// Informa aos que recebem os eventos gerados por este driver que
+	// enviamos um informe completo.
 	// https://www.kernel.org/doc/html/latest/input/input-programming.html
 	input_sync(dev);
 resubmit:
@@ -269,6 +271,8 @@ static void usb_mouse_disconnect(struct usb_interface *intf)
 #define USB_VENDOR_ID      0x0079
 #define USB_PRODUCT_ID     0x0006
 
+// Tabela de dispositivos que funcionam com esse driver.
+// https://www.kernel.org/doc/html/latest/driver-api/usb/hotplug.html
 static struct usb_device_id usb_mouse_id_table [] = {
     { USB_DEVICE(USB_VENDOR_ID, USB_PRODUCT_ID) },
     { }
