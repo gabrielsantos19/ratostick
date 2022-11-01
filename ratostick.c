@@ -110,6 +110,7 @@ static void usb_mouse_irq(struct urb *urb)
 
 
 
+	// https://www.kernel.org/doc/html/latest/input/input-programming.html
 	input_sync(dev);
 resubmit:
 	status = usb_submit_urb (urb, GFP_ATOMIC);
@@ -138,6 +139,9 @@ static void usb_mouse_close(struct input_dev *dev)
 	usb_kill_urb(mouse->irq);
 }
 
+// Essa função é chamada quando um dispositivo que corresponde à informação
+// fornecida em .id_table é visto.
+// Ver: https://www.kernel.org/doc/htmldocs/writing_usb_driver/basics.html
 static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_id *id)
 {
 	struct usb_device *dev = interface_to_usbdev(intf);
@@ -161,6 +165,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 	maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
 
 	mouse = kzalloc(sizeof(struct usb_mouse), GFP_KERNEL);
+	// https://www.kernel.org/doc/html/latest/driver-api/input.html
 	input_dev = input_allocate_device();
 	if (!mouse || !input_dev)
 		goto fail1;
@@ -251,6 +256,9 @@ fail1:
 	return error;
 }
 
+// Essa função é chamada quando um dispositivo que corresponde à informação
+// fornecida em .id_table é removido.
+// Ver: https://www.kernel.org/doc/htmldocs/writing_usb_driver/basics.html
 static void usb_mouse_disconnect(struct usb_interface *intf)
 {
 	struct usb_mouse *mouse = usb_get_intfdata (intf);
@@ -290,4 +298,5 @@ static struct usb_driver usb_mouse_driver = {
 	.id_table	= usb_mouse_id_table,
 };
 
+// https://www.kernel.org/doc/html/latest/driver-api/usb/usb.html
 module_usb_driver(usb_mouse_driver);
