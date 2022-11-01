@@ -5,13 +5,6 @@
  *  USB HIDBP Mouse support
  */
 
-/*
- *
- * Should you need to contact me, the author, you can do so either by
- * e-mail - mail your message to <vojtech@ucw.cz>, or by paper mail:
- * Vojtech Pavlik, Simunkova 1594, Prague 8, 182 00 Czech Republic
- */
-
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -273,20 +266,12 @@ static void usb_mouse_disconnect(struct usb_interface *intf)
 	}
 }
 
-// static const struct usb_device_id usb_mouse_id_table[] = {
-// 	{ USB_INTERFACE_INFO(USB_INTERFACE_CLASS_HID, USB_INTERFACE_SUBCLASS_BOOT,
-// 		USB_INTERFACE_PROTOCOL_MOUSE) },
-// 	{ }	/* Terminating entry */
-// };
-
-/* Define these values to match your devices */
 #define USB_VENDOR_ID      0x0079
 #define USB_PRODUCT_ID     0x0006
 
-/* table of devices that work with this driver */
 static struct usb_device_id usb_mouse_id_table [] = {
     { USB_DEVICE(USB_VENDOR_ID, USB_PRODUCT_ID) },
-    { }	/* Terminating entry */
+    { }
 };
 
 MODULE_DEVICE_TABLE (usb, usb_mouse_id_table);
