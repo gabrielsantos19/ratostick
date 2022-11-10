@@ -49,3 +49,4 @@ make clean
 ## Trabalhos futuros
 
 1. Atualizar o driver para que ele funcione sem a necessidade de remover o módulo usbhid ou manualmente transferir o dispositivo para o driver.
+2. Implementar lógica para fazer o controle vibrar e utilizar algum evento do computador para disparar isso.
