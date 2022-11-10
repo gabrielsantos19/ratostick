@@ -35,6 +35,8 @@ Para vincular o joystick ao ratostick:
 echo -n "1-2:1.0" > /sys/bus/usb/drivers/ratostick/bind
 ```
 
+Note que `"1-2:1.0"` é apenas um bus id de exemplo. Para os comandos funcionarem, é necessário utilizar o bus id que corresponde à conexão com joystick, que não necessariamente será o mesmo. Outro detalhe é que esses comandos não funcionaram com sudo nos testes realizados, sendo necessário utilizar `su` ou envolver os comandos com `sudo sh -c '{comando}'`.
+
 ### Comandos extras
 
 Para remover o driver ratostick do sistema:
