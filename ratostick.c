@@ -57,14 +57,14 @@ static void usb_mouse_irq(struct urb *urb)
 
 	// Byte 0 -> Analógico esquerdo X
 	// Byte 1 -> Analógico esquerdo Y
-	// Byte 2 -> ???
+	// Byte 2 -> Não foi mapeado
 	// Byte 3 -> Analógico direito X
 	// Byte 4 -> Analógico direito Y
 	// Byte 5 -> Contagem no sentido horário das setas pressionadas
-	//   0x0F == 0 ->
-	//   0x0F == 2 ->
-	//   0x0F == 4 ->
-	//   0x0F == 6 ->
+	//   0x0F == 0 -> Seta para cima
+	//   0x0F == 2 -> Seta para direita
+	//   0x0F == 4 -> Seta para baixo
+	//   0x0F == 6 -> seta esquerda
 	//   0x10 -> 1
 	//   0x20 -> 2
 	//   0x40 -> 3
@@ -74,7 +74,7 @@ static void usb_mouse_irq(struct urb *urb)
 	//   0x02 -> R1
 	//   0x04 -> L2
 	//   0x08 -> R2
-	//   0x10 -> 9
+	//   0x10 -> 9 (Select)
 	//   0x20 -> 10 (Start)
 	//   0x40 -> Analógico esquerdo - L3
 	//   0x80 -> Analógico direito - R3
@@ -84,16 +84,17 @@ static void usb_mouse_irq(struct urb *urb)
 	input_report_key(dev, KEY_RIGHT,  (data[5] & 0x0F) == 2);
 	input_report_key(dev, KEY_DOWN,   (data[5] & 0x0F) == 4);
 	input_report_key(dev, KEY_LEFT,   (data[5] & 0x0F) == 6);
-	// Mapear os botões numéricos do joystick
-	input_report_key(dev, KEY_1,   data[5] & 0x10);
-	input_report_key(dev, KEY_2,   data[5] & 0x20);
-	input_report_key(dev, KEY_3,   data[5] & 0x40);
-	input_report_key(dev, KEY_4,   data[5] & 0x80);
-	// Mapear coisas aleatórias
-	input_report_key(dev, KEY_ENTER,     data[6] & 0x01);
-	input_report_key(dev, KEY_BACKSPACE, data[6] & 0x02);
-	input_report_key(dev, KEY_9,         data[6] & 0x10);
-	input_report_key(dev, KEY_0,         data[6] & 0x20);
+	// Mapear demais botões numéricos do joystick
+	input_report_key(dev, KEY_C,         data[5] & 0x10);
+	input_report_key(dev, KEY_V,         data[5] & 0x20);
+	input_report_key(dev, KEY_ENTER,     data[5] & 0x40);
+	input_report_key(dev, KEY_SPACE,     data[5] & 0x80);
+	input_report_key(dev, KEY_LEFTCTRL,  data[6] & 0x01);
+	input_report_key(dev, KEY_LEFTSHIFT, data[6] & 0x02);
+	input_report_key(dev, KEY_BACKSPACE, data[6] & 0x10);
+	input_report_key(dev, KEY_ESC,       data[6] & 0x20);
+	input_report_key(dev, KEY_A,         data[6] & 0x40);
+	input_report_key(dev, KEY_G,         data[6] & 0x80);
 	// Mapear joystick para funcionalidade de mouse
 	input_report_key(dev, BTN_LEFT,   data[6] & 0x04);
 	input_report_key(dev, BTN_RIGHT,  data[6] & 0x08);
@@ -208,14 +209,16 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 	set_bit(KEY_LEFT, input_dev->keybit);
 	set_bit(KEY_RIGHT, input_dev->keybit);
 	set_bit(KEY_DOWN, input_dev->keybit);
+	set_bit(KEY_LEFTCTRL, input_dev->keybit);
+	set_bit(KEY_LEFTSHIFT, input_dev->keybit);
+	set_bit(KEY_C, input_dev->keybit);
+	set_bit(KEY_V, input_dev->keybit);
 	set_bit(KEY_ENTER, input_dev->keybit);
+	set_bit(KEY_SPACE, input_dev->keybit);
 	set_bit(KEY_BACKSPACE, input_dev->keybit);
-	set_bit(KEY_1, input_dev->keybit);
-	set_bit(KEY_2, input_dev->keybit);
-	set_bit(KEY_3, input_dev->keybit);
-	set_bit(KEY_4, input_dev->keybit);
-	set_bit(KEY_9, input_dev->keybit);
-	set_bit(KEY_0, input_dev->keybit);
+	set_bit(KEY_ESC, input_dev->keybit);
+	set_bit(KEY_A, input_dev->keybit);
+	set_bit(KEY_G, input_dev->keybit);
 
 
 
