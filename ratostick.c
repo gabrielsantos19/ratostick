@@ -117,6 +117,8 @@ resubmit:
 			mouse->usbdev->devpath, status);
 }
 
+// Corresponde à função open de input_dev
+// https://www.kernel.org/doc/html/v4.12/driver-api/input.html
 static int usb_mouse_open(struct input_dev *dev)
 {
 	struct usb_mouse *mouse = input_get_drvdata(dev);
@@ -128,6 +130,8 @@ static int usb_mouse_open(struct input_dev *dev)
 	return 0;
 }
 
+// Corresponde à função close de input_dev
+// https://www.kernel.org/doc/html/v4.12/driver-api/input.html
 static void usb_mouse_close(struct input_dev *dev)
 {
 	struct usb_mouse *mouse = input_get_drvdata(dev);
