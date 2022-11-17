@@ -4,7 +4,13 @@ Gabriel Oliveira Santos (@gabrielsantos19)
 
 ## Introdução
 
-Ratostick é um driver para joystick usb que traduz os dados enviados pelo joystick em eventos de mouse e teclado.
+Ratostick é um driver para joystick usb que traduz os dados enviados pelo joystick em eventos de mouse e teclado. Este driver permite controlar o cursor através do analógico direito, botão direito do mouse através do R2, scroll do mouse através do analógico esquerdo, o botão de teclado ENTER através do botão 3 do joystick, dentre outras teclas.
+
+O mapeamento realizado pode ser consultado em ratostick.c, da linha 58 à linha 105.
+
+O joystick utilizado é desse modelo:
+
+![image](https://user-images.githubusercontent.com/25865943/202492315-267fd1fa-c24a-4691-95c8-591225a4bd06.png)
 
 ## Instalação
 
