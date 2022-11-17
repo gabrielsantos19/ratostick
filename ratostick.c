@@ -79,12 +79,12 @@ static void usb_mouse_irq(struct urb *urb)
 	//   0x40 -> Analógico esquerdo - L3
 	//   0x80 -> Analógico direito - R3
 
-	// Mapear as setas do joystick
+	// Mapear as setas do joystick para as setas do teclado
 	input_report_key(dev, KEY_UP,     (data[5] & 0x0F) == 0);
 	input_report_key(dev, KEY_RIGHT,  (data[5] & 0x0F) == 2);
 	input_report_key(dev, KEY_DOWN,   (data[5] & 0x0F) == 4);
 	input_report_key(dev, KEY_LEFT,   (data[5] & 0x0F) == 6);
-	// Mapear demais botões numéricos do joystick
+	// Mapear demais botões numéricos do joystick para teclas do teclado
 	input_report_key(dev, KEY_C,         data[5] & 0x10);
 	input_report_key(dev, KEY_V,         data[5] & 0x20);
 	input_report_key(dev, KEY_ENTER,     data[5] & 0x40);
@@ -95,11 +95,13 @@ static void usb_mouse_irq(struct urb *urb)
 	input_report_key(dev, KEY_ESC,       data[6] & 0x20);
 	input_report_key(dev, KEY_A,         data[6] & 0x40);
 	input_report_key(dev, KEY_G,         data[6] & 0x80);
-	// Mapear joystick para funcionalidade de mouse
+	// Mapear R2 e L2 do joystick para os botões direito e esquerdo do mouse
 	input_report_key(dev, BTN_LEFT,   data[6] & 0x04);
 	input_report_key(dev, BTN_RIGHT,  data[6] & 0x08);
+	// Mapear o analogico direito para controlar o cursor
 	input_report_rel(dev, REL_X,      (data[3] - 128) / 32);
 	input_report_rel(dev, REL_Y,      (data[4] - 128) / 32);
+	// Mapear o analogico esquerdo para controlar o scroll
 	input_report_rel(dev, REL_WHEEL,  (data[1] - 128) / 64 * -1);
 
 
